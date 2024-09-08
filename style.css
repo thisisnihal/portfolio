@@ -1,0 +1,237 @@
+:root {
+    --bg-gradient: radial-gradient(circle, rgba(63, 94, 251, 1) 30%, rgba(252, 70, 179, 1) 100%);
+    --bg-color-2: rgb(63, 94, 251);
+    --bg-gradient-2: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(68, 147, 252, 1) 66%);
+    --color-gray: rgba(0, 0, 0, 0.691);
+    --bg-gradient-3: linear-gradient(90deg, hsla(208, 33%, 21%, 1) 0%, hsla(211, 36%, 46%, 1) 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-gradient-3);
+    /* background: var(--color-gray); */
+    scroll-behavior: smooth;
+    overflow-x: clip;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(224, 224, 224, 0.486);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(125, 125, 125, 0.691);
+    border-radius: 10px;
+}
+
+
+
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(86, 86, 86, 0.421);
+    backdrop-filter: blur(60px);
+    z-index: 1000;
+    /* border: 1px dotted white; */
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+nav {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: azure;
+}
+
+/* nav a:nth-child(n+3):hover { */
+nav a:hover,
+a:active {
+    text-decoration: underline;
+    color: azure;
+}
+
+#menu__btn {
+    display: none;
+    margin-right: 1rem;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border-radius: 5px;
+    border: 2px solid #000;
+}
+
+div {
+    /* border: 1px dotted white; */
+}
+
+#home {
+    margin-top: 80px;
+    height: calc(60vh - 60px);
+    /* background-color: rgba(255, 166, 0, 0.337); */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 1rem;
+}
+
+#home__content {
+    /* background-color: rgb(91, 153, 153); */
+    width: 50%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.5;
+    color: rgba(227, 227, 227, 0.844);
+
+}
+
+#home__content h2 span {
+    display: inline-block;
+    animation-name: fade;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+    animation-duration: 3s;
+
+}
+
+#home__content h2 span:nth-child(1) {
+    color: aquamarine;
+    animation-direction: alternate-reverse;
+}
+
+#home__content h2 span:nth-child(2) {
+    animation-direction: alternate;
+    color: rgb(166, 255, 115);
+}
+
+@keyframes fade {
+
+    0%,
+    50% {
+        opacity: 0;
+        display: none;
+    }
+
+    100% {
+        display: inline-block;
+        opacity: 1;
+        animation: glow 1s ease-in-out infinite alternate;
+    }
+}
+
+
+@keyframes glow {
+    from {
+        --clr1: #a4ff80;
+        --glow-size: 3px;
+        text-shadow: 0 0 var(--glow-size) var(--clr1);
+    }
+
+    to {
+        --clr1: #fcffcf;
+        --glow-size: 0px;
+        text-shadow: 0 0 var(--glow-size) var(--clr1);
+    }
+}
+
+#home__image {
+    width: 30%;
+    height: fit-content;
+
+    /* background-color: black; */
+}
+
+#home__image img {
+    width: 100%;
+    /* filter: drop-shadow(1px 1px 0 rgba(178, 178, 178, 0.407)) drop-shadow(-1px -1px 0 rgba(134, 134, 134, 0.526)); */
+}
+
+
+
+
+
+
+
+/* apply for devices width <= 600px */
+@media only screen and (max-width: 600px) {
+    header {
+        padding: 1rem 0;
+    }
+
+    header h1 {
+        margin-left: 1rem;
+    }
+
+    header button {
+        margin-right: 1rem;
+    }
+
+    nav {
+        display: none;
+        position: absolute;
+        top: 60px;
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding-left: 40%;
+        background-color: rgba(43, 43, 43, 0.884);
+        z-index: 1005;
+    }
+
+    #menu__btn {
+        display: block;
+    }
+
+    #home {
+        height: auto;
+        padding: 20px 2px;
+        flex-direction: column-reverse;
+    }
+
+    #home__content {
+        width: 100%;
+        height: 100%;
+        padding: 0.5rem 0.5rem;
+        font-size: small;
+        flex-direction: column;
+    }
+
+    #home__image {
+        width: 70%;
+        height: auto;
+    }
+
+}
