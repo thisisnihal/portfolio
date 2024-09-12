@@ -7,27 +7,32 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖥️</text></svg>">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Nihal - Portfolio</title>
     <script src="main.js" defer></script>
 
 </head>
 
 <body>
+
     <header>
-        <h1>
-            <a href="#">Nihal</a>
-        </h1>
-        <button id="menu__btn" onclick="toggleMenu()">
-            <img src="static/menu.svg" alt="Menu Icon" />
-        </button>
+        <a href="#" class="logo">Nihal</a>
+
+        <input type="checkbox" id="checkbox-menu">
+        <label for="checkbox-menu" class="icons">
+            <i class="bx bx-menu" id="menu-icon"></i>
+            <i class="bx bx-x" id="close-icon"></i>
+        </label>
+
         <nav>
-            <a href="#">🏠 Home</a>
-            <a href="#liked__projects">Favorites</a>
+            <a href="#">Home</a>
+            <a href="#liked__projects">Liked Projects</a>
             <a href="#projects">Projects</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
         </nav>
     </header>
+
 
     <div id="home">
         <div id="home__content">
@@ -41,16 +46,35 @@
     <div id="liked__projects">
         liked Projects
     </div>
-    <div id="projects">
-        Projects
+    <div id="projects" class="container">
+        <div class="project-card content">
+            This is a simple Card 1
+        </div>
+        <div class="project-card content">
+            This is a simple Card 2
+        </div>
+        <div class="project-card content">
+            This is a simple Card 3
+        </div>
+
+        <div class="project-card content">
+            This is a simple Card 4
+        </div>
+
+        <div class="project-card content">
+            This is a simple Card 5
+        </div>
+
+
     </div>
+    <!-- <div class="project-card"></div> -->
     <div id="about">
         About
     </div>
     <div id="contact">
         contact
     </div>
-
+    <a href="#" id="up-icon"><i class='bx bxs-up-arrow-square'></i></a>
 </body>
 
 </html>
