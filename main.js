@@ -1,48 +1,91 @@
-console.log("hello world");
-
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     const container = document.querySelector('.container'); // .MAIN is a class since I think It could be more useful
-
-//     container.addEventListener('wheel', function (event) {
-//         if (event.deltaY !== 0) {
-//             event.preventDefault();
-//             container.scrollLeft += event.deltaY * 10;
-//         }
-//     });
-// });
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    const container = document.querySelector('.container'); // Assuming .MAIN is the container for #projects
+document.addEventListener('DOMContentLoaded', () => {
     const projects = document.querySelector('#projects');
-    const projectCards = document.querySelectorAll('.project-card');
+    const likedProjects = document.querySelector('#liked__projects .container');
+    let activeCard = null;
+    let startX, startY;
+    let isDragging = false;
 
-    let currentScrollPosition = 0;
-    const cardWidth = projectCards[0].offsetWidth + 20; // Card width + margin
+    if (likedProjects && likedProjects.parentElement) {
+        likedProjects.parentElement.style.display = 'none';
+    }
 
-    container.addEventListener('wheel', function (event) {
-        event.preventDefault();
+    const getClientCoords = (e) => e.type.startsWith('touch') ?
+        { x: e.touches[0].clientX, y: e.touches[0].clientY } :
+        { x: e.clientX, y: e.clientY };
 
-        // Scroll down (next card)
-        if (event.deltaY > 0) {
-            currentScrollPosition += cardWidth;
-            if (currentScrollPosition > (projects.scrollWidth - container.offsetWidth)) {
-                currentScrollPosition = projects.scrollWidth - container.offsetWidth; // Don't scroll past the last card
+    const handleStart = (e) => {
+        activeCard = e.currentTarget;
+        if (activeCard.className === 'card') return;
+        isDragging = true;
+        const { x, y } = getClientCoords(e);
+        startX = x;
+        startY = y;
+        activeCard.style.transition = 'none';
+    };
+
+    const handleMove = (e) => {
+        if (!isDragging || !activeCard) return;
+
+        const { x, y } = getClientCoords(e);
+        const dx = x - startX;
+        const dy = y - startY;
+
+        requestAnimationFrame(() => {
+            if (activeCard) {
+                activeCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 10}deg)`;
             }
-        }
-
-        // Scroll up (previous card)
-        if (event.deltaY < 0) {
-            currentScrollPosition -= cardWidth;
-            if (currentScrollPosition < 0) {
-                currentScrollPosition = 0; // Don't scroll past the first card
-            }
-        }
-
-        projects.scrollTo({
-            left: currentScrollPosition,
-            behavior: 'smooth'
         });
-    });
+    };
+
+    const handleEnd = () => {
+        if (!isDragging || !activeCard) return;
+
+        isDragging = false;
+        const swipeThreshold = window.innerWidth / 6;
+
+        const { left: startLeft } = activeCard.getBoundingClientRect();
+        const horizontalDistance = startLeft - startX;
+        const swipeDirection = horizontalDistance < 0 ? -1 : 1;
+
+        if (Math.abs(horizontalDistance) > swipeThreshold) {
+            activeCard.style.transform = `translate(${swipeDirection * 150}vw, ${window.innerHeight / 2}px) rotate(${swipeDirection * 30}deg)`;
+
+            if (swipeDirection < 0 && likedProjects) {
+                const cardToPush = activeCard.cloneNode(true);
+                cardToPush.removeAttribute("style");
+                cardToPush.className = 'card';
+                likedProjects.appendChild(cardToPush);
+                if (likedProjects.parentElement) {
+                    likedProjects.parentElement.style.cssText = 'height: 600px; padding: 85px 1rem;';
+                    likedProjects.style.cssText = 'height: 100%; padding:1rem 10px;';
+                }
+            }
+
+            setTimeout(() => {
+                if (activeCard && activeCard.parentElement === projects) {
+                    projects.removeChild(activeCard);
+                }
+            }, 500);
+
+        } else if (activeCard) {
+            activeCard.style.transition = 'transform 0.5s ease';
+            activeCard.style.transform = 'translate(0, 0) rotate(0)';
+        }
+
+        activeCard = null;
+    };
+
+    const addEventListeners = (card) => {
+        card.addEventListener('mousedown', handleStart);
+        card.addEventListener('touchstart', handleStart);
+    };
+
+    if (projects) {
+        projects.addEventListener('mousemove', handleMove);
+        projects.addEventListener('touchmove', handleMove);
+        projects.querySelectorAll('.project-card').forEach(addEventListeners);
+    }
+
+    document.addEventListener('mouseup', handleEnd);
+    document.addEventListener('touchend', handleEnd);
 });

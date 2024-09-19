@@ -4,6 +4,14 @@
     --bg-gradient-2: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(68, 147, 252, 1) 66%);
     --color-gray: rgba(0, 0, 0, 0.691);
     --bg-gradient-3: linear-gradient(90deg, rgb(102, 152, 193) 0%, rgb(91, 138, 203) 100%);
+
+    --platinum: #d8dbe2ff;
+    --powder-blue: #a9bcd0ff;
+    --moonstone: #58a4b0ff;
+    --charcoal: #373f51ff;
+    --eerie-black: #1b1b1eff;
+
+    --card-color: #6c96cb;
 }
 
 * {
@@ -20,8 +28,10 @@ body {
     margin: 0;
     background: var(--bg-gradient-3);
     /* background-color: #373737; */
+    /* background-color: var(--eerie-black); */
     scroll-behavior: smooth;
     overflow-x: clip;
+    color: var(--platinum);
 }
 
 h1 {
@@ -127,7 +137,8 @@ a:active {
     flex-direction: column;
     justify-content: center;
     line-height: 1.5;
-    color: rgba(227, 227, 227, 0.844);
+    /* color: rgba(227, 227, 227, 0.844); */
+    font-size: 150%;
 }
 
 #home__content h2 span {
@@ -169,42 +180,150 @@ a:active {
 
 
 #projects {
-    display: flex;
-    align-items: center;
-    scroll-snap-type: x mandatory;
-    /* This ensures cards snap when scrolling horizontally */
-    scroll-behavior: smooth;
-    width: 100vw;
-    height: 70vh;
-    padding: 70px 0;
-    box-sizing: border-box;
     position: relative;
-    overflow-x: auto;
-
-}
-
-#projects::-webkit-scrollbar {
-    display: none;
-}
-
-.project-card {
-    flex: 0 0 auto;
-    width: 300px;
-    /* Adjust width as needed */
-    height: 100%;
-    scroll-snap-align: center;
-    background-color: rgba(170, 255, 244, 0.798);
-    backdrop-filter: blur(50px);
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100vw;
+    height: 70vh;
+    overflow: hidden;
+}
+
+
+.project-card {
+    position: absolute;
+    width: 300px;
+    height: 400px;
+    /* background: rgb(238, 238, 238); */
+    background: var(--card-color);
+    backdrop-filter: blur(50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border-radius: 7px;
-    margin: 0 10px;
+    border: 1px dashed #000;
+    transition: transform 0.3s ease-out;
+    cursor: grab;
+    will-change: transform;
+    user-select: none;
+}
+
+.project-card:active {
+    cursor: grabbing;
+    transition: none;
+}
+
+.project-card:not(:first-child) {
+    opacity: 1;
+}
+
+.project-card:first-child {
+    opacity: 1;
+}
+
+#liked__projects {
+    width: 100vw;
+    height: 0;
+    padding: 0px;
+    will-change: height;
+    /* background-color: rgb(102, 152, 193); */
+    /* overflow-x: scroll;
+    display: flex;
+    overflow: auto;
+    white-space: nowrap; */
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* background-color: rgba(84, 133, 174, 0.913);  */
+    /* box-shadow: 0 0 10px #626262; */
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem;
+    flex-wrap: nowrap;
+    /* margin-top: 1rem; */
+    /* box-shadow: 0 0 10px #1919197a; */
+    border-radius: 2px;
 }
 
 
 
+.card {
+    /* position: absolute; */
+    width: 300px;
+    height: 400px;
+    background: var(--card-color);
+    backdrop-filter: blur(50px);
+    display: inline-flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    transition: transform 0.3s ease-out;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: -2px -2px 5px #1d1d1d7c;
+}
 
+.card img {
+    width: 75%;
+}
+
+#about {
+    padding: 0.8rem 5rem;
+}
+
+#about h2 {
+    text-decoration: underline;
+}
+
+#about p {
+    margin-top: 10px;
+}
+
+
+
+#contact {
+    padding: 0.8rem 5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+#contact h2 {
+    text-decoration: underline;
+}
+
+#contact form {
+    margin-top: 10px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: center;
+    width: 100%;
+}
+
+#message {
+    width: 100%;
+    border-radius: 5px;
+    height: 10rem;
+}
+
+#contact form input {
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: #628df1a4;
+    color: #fcffcf;
+}
+
+#contact form textarea {
+    padding: 1rem 1rem;
+}
 
 /* Center the cards for larger screens */
 @media only screen and (min-width: 601px) {
@@ -267,6 +386,7 @@ a:active {
         padding: 0.5rem;
         font-size: small;
         flex-direction: column;
+        font-size: 85%;
     }
 
     #home__image {
@@ -278,6 +398,14 @@ a:active {
         margin-right: calc((100vw - 300px) / 2);
     }
 
+    #about {
+        padding: 0.8rem;
+    }
+
+    #contact {
+        padding: 0.8rem;
+    }
+
 }
 
 
@@ -285,7 +413,43 @@ a:active {
     display: none;
 }
 
-@media only screen and (max-width:768px) {
+.project-card img {
+    user-select: none;
+    width: 70%;
+}
+
+@media only screen and (max-width:945px) {
+
+
+    #home {
+        height: auto;
+        padding: 20px 2px;
+        flex-direction: column-reverse;
+    }
+
+    #home__content {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: small;
+        flex-direction: column;
+        font-size: 85%;
+    }
+
+    #home__image {
+        width: 70%;
+    }
+
+    .project-card {
+        margin-left: calc((100vw - 300px) / 2);
+        margin-right: calc((100vw - 300px) / 2);
+    }
+
+    .project-card img {
+        width: 70%;
+    }
+
+
+
     #up-icon {
         display: block;
         position: fixed;
@@ -295,6 +459,9 @@ a:active {
 
     }
 
+    header {
+        padding: 1rem 5%;
+    }
 
     .icons {
         display: inline-flex;
