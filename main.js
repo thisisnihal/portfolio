@@ -5,6 +5,8 @@ const elements = {
     projectContainer: document.querySelector('.project__container')
 };
 
+
+
 function swipeHandler(ele, onSwipeCallback) {
     let coordX = 0;
     let coordY = 0;
@@ -78,15 +80,11 @@ const swipeCB = (ele, action, x, y) => {
         const card = ele.cloneNode(true);
         card.removeAttribute("style");
         card.removeChild(card.querySelector('.swipe-overlay'));
-        console.log("card:: ", card);
-
-        // Move the card to the project container after a delay
         setTimeout(() => {
             elements.projectContainer.prepend(card);
-            swipeHandler(card, swipeCB); // Apply swipe handler directly to the new card
+            swipeHandler(card, swipeCB);
         }, 1200);
         ele.parentElement.removeChild(ele);
-        console.log("left swipe");
     } else if (action === 'right') {
         const card = ele.cloneNode(true);
         card.removeAttribute("style");
