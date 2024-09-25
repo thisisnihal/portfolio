@@ -1,91 +1,151 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const projects = document.querySelector('#projects');
-    const likedProjects = document.querySelector('#liked__projects .container');
-    let activeCard = null;
-    let startX, startY;
-    let isDragging = false;
+const elements = {
+    projectCards: document.querySelectorAll('.project-card'),
+    likedProjects: document.querySelector('#liked__projects .container'),
+    menuCheckBox: document.getElementById('checkbox-menu'),
+    projectContainer: document.querySelector('.project__container')
+};
 
-    if (likedProjects && likedProjects.parentElement) {
-        likedProjects.parentElement.style.display = 'none';
+function swipeHandler(ele, onSwipeCallback) {
+    let coordX = 0;
+    let coordY = 0;
+    let startX = 0, startY = 0;
+    const threshold = 80;
+    let dragging = false;
+
+    function onStart(event) {
+        if (event.type === 'touchstart') {
+            startX = event.touches[0].clientX;
+            startY = event.touches[0].clientY;
+        } else {
+            startX = event.clientX;
+            startY = event.clientY;
+        }
+        coordX = 0;
+        coordY = 0;
+        dragging = true;
     }
 
-    const getClientCoords = (e) => e.type.startsWith('touch') ?
-        { x: e.touches[0].clientX, y: e.touches[0].clientY } :
-        { x: e.clientX, y: e.clientY };
+    function onMove(event) {
+        if (!dragging) return;
+        if (event.type === 'touchmove') {
+            coordX = event.touches[0].clientX - startX;
+            coordY = event.touches[0].clientY - startY;
+        } else {
+            coordX = event.clientX - startX;
+            coordY = event.clientY - startY;
+        }
+        if (typeof onSwipeCallback === 'function') {
+            onSwipeCallback(ele, 'moving', coordX, coordY);
+        }
+    }
 
-    const handleStart = (e) => {
-        activeCard = e.currentTarget;
-        if (activeCard.className === 'card') return;
-        isDragging = true;
-        const { x, y } = getClientCoords(e);
-        startX = x;
-        startY = y;
-        activeCard.style.transition = 'none';
-    };
-
-    const handleMove = (e) => {
-        if (!isDragging || !activeCard) return;
-
-        const { x, y } = getClientCoords(e);
-        const dx = x - startX;
-        const dy = y - startY;
-
-        requestAnimationFrame(() => {
-            if (activeCard) {
-                activeCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 10}deg)`;
+    function onEnd() {
+        dragging = false;
+        let direction = 'cancelled';
+        if (Math.abs(coordX) > Math.abs(coordY)) {
+            if (Math.abs(coordX) > threshold) {
+                direction = coordX > 0 ? 'right' : 'left';
             }
-        });
-    };
-
-    const handleEnd = () => {
-        if (!isDragging || !activeCard) return;
-
-        isDragging = false;
-        const swipeThreshold = window.innerWidth / 6;
-
-        const { left: startLeft } = activeCard.getBoundingClientRect();
-        const horizontalDistance = startLeft - startX;
-        const swipeDirection = horizontalDistance < 0 ? -1 : 1;
-
-        if (Math.abs(horizontalDistance) > swipeThreshold) {
-            activeCard.style.transform = `translate(${swipeDirection * 150}vw, ${window.innerHeight / 2}px) rotate(${swipeDirection * 30}deg)`;
-
-            if (swipeDirection < 0 && likedProjects) {
-                const cardToPush = activeCard.cloneNode(true);
-                cardToPush.removeAttribute("style");
-                cardToPush.className = 'card';
-                likedProjects.appendChild(cardToPush);
-                if (likedProjects.parentElement) {
-                    likedProjects.parentElement.style.cssText = 'height: 600px; padding: 85px 1rem;';
-                    likedProjects.style.cssText = 'height: 100%; padding:1rem 10px;';
-                }
+        } else {
+            if (Math.abs(coordY) > threshold) {
+                direction = coordY > 0 ? 'down' : 'up';
             }
-
-            setTimeout(() => {
-                if (activeCard && activeCard.parentElement === projects) {
-                    projects.removeChild(activeCard);
-                }
-            }, 500);
-
-        } else if (activeCard) {
-            activeCard.style.transition = 'transform 0.5s ease';
-            activeCard.style.transform = 'translate(0, 0) rotate(0)';
         }
 
-        activeCard = null;
-    };
-
-    const addEventListeners = (card) => {
-        card.addEventListener('mousedown', handleStart);
-        card.addEventListener('touchstart', handleStart);
-    };
-
-    if (projects) {
-        projects.addEventListener('mousemove', handleMove);
-        projects.addEventListener('touchmove', handleMove);
-        projects.querySelectorAll('.project-card').forEach(addEventListeners);
+        if (typeof onSwipeCallback === 'function') {
+            onSwipeCallback(ele, direction, coordX, coordY);
+        }
     }
 
-    document.addEventListener('mouseup', handleEnd);
-    document.addEventListener('touchend', handleEnd);
-});
+    ele.addEventListener('touchstart', onStart, false);
+    ele.addEventListener('mousedown', onStart, false);
+    ele.addEventListener('touchmove', onMove, false);
+    ele.addEventListener('mousemove', onMove, false);
+    ele.addEventListener('touchend', onEnd, false);
+    ele.addEventListener('mouseup', onEnd, false);
+}
+
+const swipeCB = (ele, action, x, y) => {
+    const overlay = ele.querySelector('.swipe-overlay') || createOverlay(ele);
+
+    if (action === 'moving') {
+        if (Math.abs(y) >= Math.abs(x)) {
+            return;
+        }
+        ele.style.transform = `translate(${x}px, 0) rotate(${x / 10}deg)`;
+        updateOverlay(overlay, x);
+    } else if (action === 'left') {
+        const card = ele.cloneNode(true);
+        card.removeAttribute("style");
+        card.removeChild(card.querySelector('.swipe-overlay'));
+        console.log("card:: ", card);
+
+        // Move the card to the project container after a delay
+        setTimeout(() => {
+            elements.projectContainer.prepend(card);
+            swipeHandler(card, swipeCB); // Apply swipe handler directly to the new card
+        }, 1200);
+        ele.parentElement.removeChild(ele);
+        console.log("left swipe");
+    } else if (action === 'right') {
+        const card = ele.cloneNode(true);
+        card.removeAttribute("style");
+        card.className = 'card';
+        card.removeChild(card.querySelector('.swipe-overlay'));
+        ele.parentElement.removeChild(ele);
+        resetLikedProjectsStyle();
+        elements.likedProjects.appendChild(card);
+    } else if (action === 'cancelled') {
+        ele.style.transform = '';
+        resetOverlay(overlay);
+    }
+    if (elements.likedProjects.childElementCount == 0) {
+        elements.likedProjects.parentElement.style.display = 'none';
+    } else {
+        elements.likedProjects.parentElement.style.display = 'block';
+    }
+};
+
+const createOverlay = (ele) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'swipe-overlay';
+    ele.appendChild(overlay);
+    return overlay;
+};
+
+const updateOverlay = (overlay, deltaX) => {
+    const opacity = Math.min(Math.abs(deltaX) / 100, 0.9);
+    overlay.style.opacity = opacity;
+    if (deltaX > 0) {
+        overlay.innerHTML = '❤️';
+        overlay.style.backgroundColor = `rgba(255, 45, 85, ${opacity})`;
+        overlay.style.color = '#fff';
+    } else {
+        overlay.innerHTML = '✖️';
+        overlay.style.backgroundColor = `rgba(88, 86, 214, ${opacity})`;
+        overlay.style.color = '#fff';
+    }
+};
+
+const resetOverlay = (overlay) => {
+    overlay.style.opacity = 0;
+    overlay.innerHTML = '';
+    overlay.style.backgroundColor = 'transparent';
+};
+
+
+const resetLikedProjectsStyle = () => {
+    elements.likedProjects.parentElement.style.cssText = 'height: auto; padding: 10px 1rem;';
+    elements.likedProjects.style.cssText = 'height: auto; padding: 1rem 10px;';
+};
+
+const addSwipeHandler = () => {
+    elements.projectCards.forEach((ele) => {
+        swipeHandler(ele, swipeCB);
+    });
+}
+
+addSwipeHandler();
+const toggleMenu = () => {
+    elements.menuCheckBox.checked = !elements.menuCheckBox.checked;
+};

@@ -10,89 +10,86 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Nihal - Portfolio</title>
     <script src="main.js" defer></script>
-
 </head>
 
 <body>
-
     <header>
         <a href="#" class="logo">Nihal</a>
-
         <input type="checkbox" id="checkbox-menu">
         <label for="checkbox-menu" class="icons">
             <i class="bx bx-menu" id="menu-icon"></i>
             <i class="bx bx-x" id="close-icon"></i>
         </label>
-
         <nav>
-            <a href="#">Home</a>
-            <a href="#liked__projects">Liked Projects</a>
-            <a href="#projects">Projects</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="#" onclick="toggleMenu()">Home</a>
+            <a href="#liked__projects" onclick="toggleMenu()">Liked Projects</a>
+            <a href="#projects" onclick="toggleMenu()">Projects</a>
+            <a href="#about" onclick="toggleMenu()">About</a>
+            <a href="#contact" onclick="toggleMenu()">Contact</a>
             <a href="https://docs.google.com/document/d/1SQc91OT9NaDBVnxOwNmAOUQD1-vYax-QjkfoDbVQKQc/edit?usp=sharing"
-                target="_blank">Resume</a>
+                target="_blank" onclick="toggleMenu()">Resume</a>
         </nav>
     </header>
-
-
     <div id="home">
         <div id="home__content">
             <h1>👋 This is Nihal</h1>
             <h2>Aspiring <span>Fullstack Developer</span><span>Devops Engineer</span></h2>
+            <div id="socials">
+                <i class='bx bxl-github'></i>
+            </div>
         </div>
         <div id="home__image">
             <img src="static/dexter.webp" alt="Nihal">
         </div>
     </div>
-    <div id="liked__projects">
+    <div id="liked__projects" style="display: none;">
         <h2>Liked Projects</h2>
         <div class="container">
-
         </div>
-
     </div>
     <div id="projects" class="">
         <h2>Projects</h2>
-        <div class="project-card " id="1">
-            <img src="static/dexter.webp" alt="">
-            <h2>Project Name</h2>
-            <p>Tech Stack: Html, CSS, JS/TS <br></p>
+        <div class="project__container">
+            <div class="project-card " id="1">
+                <img src="static/dexter.webp" alt="">
+                <h2>Project Name</h2>
+                <p>Tech Stack: Html, CSS, JS/TS <br></p>
+            </div>
+            <div class="project-card " id="2">
+                This is a simple Card 2
+            </div>
+            <div class="project-card " id="3">
+                This is a simple Card 3
+            </div>
+            <div class="project-card " id="4">
+                <img src="static/dexter.webp" alt="">
+                <h2>Project Name 2</h2>
+                <p>Tech Stack: Html, CSS, JS/TS <br></p>
+            </div>
+            <div class="project-card " id="5">
+                <img src="static/dexter.webp" alt="">
+                <h2>Project Name 1</h2>
+                <p>Tech Stack: Html, CSS, JS/TS 5 <br></p>
+            </div>
         </div>
-        <div class="project-card " id="2">
-            This is a simple Card 2
-        </div>
-        <div class="project-card " id="3">
-            This is a simple Card 3
-        </div>
-
-        <div class="project-card " id="4">
-            <img src="static/dexter.webp" alt="">
-            <h2>Project Name 2</h2>
-            <p>Tech Stack: Html, CSS, JS/TS <br></p>
-        </div>
-
-        <div class="project-card " id="5">
-            <img src="static/dexter.webp" alt="">
-            <h2>Project Name 1</h2>
-            <p>Tech Stack: Html, CSS, JS/TS <br></p>
-        </div>
-
-
     </div>
-    <!-- <div class="project-card"></div> -->
     <div id="about">
         <h2>About</h2>
         <p>Full stack software developer with a good understanding of Next.js, React.js, and Redux for creating
-            interactive user interfaces. Comfortable with backend development using Node.js and Express, and skilled in
+            interactive user interfaces. Comfortable with backend development using Node.js and Express, and skilled
+            in
             working with REST APIs.
         </p>
     </div>
     <div id="contact">
         <h2>Contact</h2>
-        <form action="/">
-            <p><label for="message">Message</label></p>
-            <textarea id="message" name="message"></textarea>
+        <form action="https://formspree.io/f/mrbzwyll" method="POST">
+            <label>
+                Email
+            </label>
+            <input type="email" name="email" required>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
             <input type="submit" value="Submit">
         </form>
     </div>
