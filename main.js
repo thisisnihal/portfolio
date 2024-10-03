@@ -2,9 +2,9 @@ const elements = {
     projectCards: document.querySelectorAll('.project-card'),
     likedProjects: document.querySelector('#liked__projects .container'),
     menuCheckBox: document.getElementById('checkbox-menu'),
-    projectContainer: document.querySelector('.project__container')
+    projectContainer: document.querySelector('.project__container'),
+    cardImages: document.querySelectorAll('.project-image')
 };
-
 
 
 function swipeHandler(ele, onSwipeCallback) {
@@ -67,83 +67,41 @@ function swipeHandler(ele, onSwipeCallback) {
     ele.addEventListener('mouseup', onEnd, false);
 }
 
-const swipeCB = (ele, action, x, y) => {
-    const overlay = ele.querySelector('.swipe-overlay') || createOverlay(ele);
-
-    if (action === 'moving') {
-        if (Math.abs(y) >= Math.abs(x)) {
-            return;
-        }
-        ele.style.transform = `translate(${x}px, 0) rotate(${x / 10}deg)`;
-        updateOverlay(overlay, x);
-    } else if (action === 'left') {
-        const card = ele.cloneNode(true);
-        card.removeAttribute("style");
-        card.removeChild(card.querySelector('.swipe-overlay'));
-        setTimeout(() => {
-            elements.projectContainer.prepend(card);
-            swipeHandler(card, swipeCB);
-        }, 1200);
-        ele.parentElement.removeChild(ele);
-    } else if (action === 'right') {
-        const card = ele.cloneNode(true);
-        card.removeAttribute("style");
-        card.className = 'card';
-        card.removeChild(card.querySelector('.swipe-overlay'));
-        ele.parentElement.removeChild(ele);
-        resetLikedProjectsStyle();
-        elements.likedProjects.appendChild(card);
-    } else if (action === 'cancelled') {
-        ele.style.transform = '';
-        resetOverlay(overlay);
-    }
-    if (elements.likedProjects.childElementCount == 0) {
-        elements.likedProjects.parentElement.style.display = 'none';
-    } else {
-        elements.likedProjects.parentElement.style.display = 'block';
-    }
-};
-
-const createOverlay = (ele) => {
-    const overlay = document.createElement('div');
-    overlay.className = 'swipe-overlay';
-    ele.appendChild(overlay);
-    return overlay;
-};
-
-const updateOverlay = (overlay, deltaX) => {
-    const opacity = Math.min(Math.abs(deltaX) / 100, 0.9);
-    overlay.style.opacity = opacity;
-    if (deltaX > 0) {
-        overlay.innerHTML = '❤️';
-        overlay.style.backgroundColor = `rgba(255, 45, 85, ${opacity})`;
-        overlay.style.color = '#fff';
-    } else {
-        overlay.innerHTML = '✖️';
-        overlay.style.backgroundColor = `rgba(88, 86, 214, ${opacity})`;
-        overlay.style.color = '#fff';
-    }
-};
-
-const resetOverlay = (overlay) => {
-    overlay.style.opacity = 0;
-    overlay.innerHTML = '';
-    overlay.style.backgroundColor = 'transparent';
-};
-
-
-const resetLikedProjectsStyle = () => {
-    elements.likedProjects.parentElement.style.cssText = 'height: auto; padding: 10px 1rem;';
-    elements.likedProjects.style.cssText = 'height: auto; padding: 1rem 10px;';
-};
-
-const addSwipeHandler = () => {
-    elements.projectCards.forEach((ele) => {
-        swipeHandler(ele, swipeCB);
-    });
-}
-
-addSwipeHandler();
 const toggleMenu = () => {
     elements.menuCheckBox.checked = !elements.menuCheckBox.checked;
 };
+
+elements.projectContainer.addEventListener('wheel', (event) => {
+    const container = elements.projectContainer;
+    
+    const canScrollLeft = container.scrollLeft > 0;
+    const canScrollRight = container.scrollLeft < container.scrollWidth - container.clientWidth;
+    
+    if ((event.deltaY > 0 && !canScrollRight) || (event.deltaY < 0 && !canScrollLeft)) {
+      return; 
+    }
+    event.preventDefault();
+    container.scrollLeft += event.deltaY;
+  });
+
+
+const overlay = document.createElement('div');
+
+overlay.classList.add('overlay');
+document.body.appendChild(overlay);
+
+elements.cardImages.forEach(image => {
+    image.addEventListener('click', () => {
+      if (image.classList.contains('enlarged')) {
+        image.classList.remove('enlarged');   
+        overlay.classList.remove('active');   
+      } else {
+        document.querySelectorAll('.enlarged').forEach(enlargedImage => {
+          enlargedImage.classList.remove('enlarged');
+        });
+  
+        image.classList.add('enlarged');      
+        overlay.classList.add('active');     
+      }
+    });
+  });
